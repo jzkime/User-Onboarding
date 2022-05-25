@@ -4,6 +4,7 @@ import Form from './Form'
 import Users from './Users'
 import * as yup from 'yup'
 import formSchema from './validation/formSchema'
+import axios from 'axios'
 
 const initialForm = {
   email: '',
@@ -44,7 +45,12 @@ function App() {
       last_name: formValue.last_name.trim(),
       password: formValue.password.trim()
     }
-    setUsers([...users, newUser])
+
+    axios.post('https://reqres.in/api/users', newUser)
+    .then(res => {
+      setUsers([...users, res.data])
+    })
+
     setFormValue(initialForm)
   }
 
@@ -56,9 +62,11 @@ function App() {
     <div className="App">
       <Form values={formValue} change={changeValue} submit={submitForm} errors={errors} disabled={disabledButton}/>
 
+    <div className='user-list'>
       { 
-      users.map(user => <Users user={user} key={user.email} />)
+      users.map(user => <Users user={user} key={user.id} />)
       } 
+    </div>
     </div>
   );
 }

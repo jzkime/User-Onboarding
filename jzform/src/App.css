@@ -77,6 +77,12 @@ form {
   transform: scale(1.05);
 }
 
+.user-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
 .card-container {
-  width: 45%;
+  width: 40%;
 }
