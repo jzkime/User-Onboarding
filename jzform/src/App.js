@@ -21,11 +21,14 @@ const initialErrors = {
   password: '',
 }
 
+const initialEmails = ["waffle@syrup.com"]
+
 function App() {
   const [ formValue, setFormValue ] = useState(initialForm);
   const [ users, setUsers ] = useState([]);
   const [ errors, setErrors ] = useState(initialErrors);
-  const [ disabledButton, setDisabledButton] = useState(true)
+  const [ disabledButton, setDisabledButton] = useState(true);
+  const [ usedEmails, setUsedEmails ] = useState(initialEmails);
 
   const validate = (name, value) => {
     yup.reach(formSchema, name).validate(value)
@@ -46,12 +49,16 @@ function App() {
       password: formValue.password.trim()
     }
 
-    axios.post('https://reqres.in/api/users', newUser)
-    .then(res => {
-      setUsers([...users, res.data])
-    })
-
-    setFormValue(initialForm)
+     if(!usedEmails.find(em => em === formValue.email)) {
+       axios.post('https://reqres.in/api/users', newUser)
+        .then(res => {
+          setUsers([...users, res.data])
+          setUsedEmails([...usedEmails, formValue.email])
+          setFormValue(initialForm)
+        })
+      } else {
+          setErrors({...errors, email: "This email is already in use"})
+        }
   }
 
   useEffect(() => {
